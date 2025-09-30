@@ -4,3 +4,4 @@ from django.apps import AppConfig
 class TvshowConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'tvShow'
+    verbose_name = 'фильмы'
