@@ -1,0 +1,7 @@
+<h1>Регистрация</h1>
+<form method="POST">
+    <!-- Логика кода сюда для регистрации CSRF -->
+     {% csrf_token %}
+     {{ form.as_p }}
+    <button type="submit">Регистрация</button>
+</form>
