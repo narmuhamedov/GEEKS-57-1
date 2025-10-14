@@ -2,7 +2,7 @@ from django.shortcuts import render
 from . import models
 
 
-
+#Поиск
 def seach_view(request):
     query = request.GET.get('s', '')
     products_lst = models.Product.objects.filter(title__icontains=query) if query else models.Product.none
