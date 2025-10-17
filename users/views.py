@@ -4,39 +4,77 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from . import models, forms
-
+from django.views import generic
 #регистрация
 
-def register_view(request):
-    if request.method == 'POST':
-        #form = UserCreationForm(request.POST)
+class RegisterView(generic.View):
+    def get(self, request):
+        form = forms.CustomUserCreationForm(request.POST)
+        return render(request, template_name='users/register.html', 
+                      context={'form': form})
+    def post(self, request):
         form = forms.CustomUserCreationForm(request.POST)
         if form.is_valid:
             form.save()
             return redirect('/login/')
-    else:
-        form = forms.CustomUserCreationForm()
-    return render(request, template_name='users/register.html', 
-                  context={'form': form})
+        return render(request, template_name='users/register.html', 
+                      context={'form': form})
+
+
+# def register_view(request):
+#     if request.method == 'POST':
+#         #form = UserCreationForm(request.POST)
+#         form = forms.CustomUserCreationForm(request.POST)
+#         if form.is_valid:
+#             form.save()
+#             return redirect('/login/')
+#     else:
+#         form = forms.CustomUserCreationForm()
+#     return render(request, template_name='users/register.html', 
+#                   context={'form': form})
 
 
 #авторизация
-def auth_login_view(request):
-    if request.method == 'POST':
+
+class AuthLoginView(generic.View):
+    def get(self, request):
+        form = AuthenticationForm(data=request.POST)
+        return render(request, template_name='users/login.html', 
+                      context={'form': form})
+    def post(self, request):
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('users:user_list')
-    else:
-        form = AuthenticationForm()
-    return render(request, template_name='users/login.html', 
+             user = form.get_user()
+             login(request, user)
+             return redirect('users:user_list')
+        return render(request, template_name='users/login.html', 
                   context={'form':form})
 
+# def auth_login_view(request):
+#     if request.method == 'POST':
+#         form = AuthenticationForm(data=request.POST)
+#         if form.is_valid():
+#             user = form.get_user()
+#             login(request, user)
+#             return redirect('users:user_list')
+#     else:
+#         form = AuthenticationForm()
+#     return render(request, template_name='users/login.html', 
+#                   context={'form':form})
+
+
 #Выход из сессии(из личного кабинета)
-def auth_logout_view(request):
-    logout(request)
-    return redirect('users:login')
+class AuthLogoutView(generic.View):
+    def post(self, request):
+        logout(request)
+        return redirect('users:login')
+
+
+
+
+# def auth_logout_view(request):
+#     logout(request)
+#     return redirect('users:login')
 
 
 

@@ -40,21 +40,36 @@
 
 {% for i in stud %}
 <div class="center_film" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px;">
-<div class="card" style="width: 18rem; text-align: center;">
-  <img src="{{ i.photo }}" class="card-img-top" alt="...">
-  <div class="card-body">
-    <h5 class="card-title">{{ i.name }}</h5>
-    <p class="card-text">{{ i.date_of_birth }}</p>
-    <p class="card-text">{{ i.application }}</p>
-    <a href="{{i.instagram}}" class="card-text">Инстаграм</a>
-    <p class="card-text">{{ i.subject }}</p>
-    <a href="{{i.education}}" download class="card-text">Диплом</a>
+  <div class="card" style="width: 18rem; text-align: center;">
+    <img src="{{ i.photo }}" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title">{{ i.name }}</h5>
+      <p class="card-text">{{ i.date_of_birth }}</p>
+      <p class="card-text">{{ i.application }}</p>
+      <a href="{{ i.instagram }}" class="card-text">Инстаграм</a>
+      <p class="card-text">{{ i.subject }}</p>
+      <a href="{{ i.education }}" download class="card-text">Диплом</a>
+    </div>
+    <br>
+    <a href="/student_list/{{ i.id }}/update/">Изменить анкету</a>
+    <a href="/student_list/{{ i.id }}/delete/">Удалить анкету</a>
   </div>
-  <br>
-  <a href="/student_list/{{ i.id }}/update/">Изменить анкету</a>
-   <a href="/student_list/{{ i.id }}/delete/">Удалить анкету</a>
-</div>
 </div>
 <br>
 <hr><hr>
 {% endfor %}
+
+<!-- Пагинация -->
+<div style="text-align: center; margin-top: 20px;">
+  <div class="pagination">
+    {% if stud.has_previous %}
+      <a href="?page={{ stud.previous_page_number }}">⟨ Предыдущая</a>
+    {% endif %}
+
+    <span>Страница {{ stud.number }} из {{ stud.paginator.num_pages }}</span>
+
+    {% if stud.has_next %}
+      <a href="?page={{ stud.next_page_number }}">Следующая ⟩</a>
+    {% endif %}
+  </div>
+</div>

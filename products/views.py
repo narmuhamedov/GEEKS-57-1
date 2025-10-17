@@ -1,16 +1,31 @@
 from django.shortcuts import render
 from . import models
-
+from django.views import generic
 
 #Поиск
-def seach_view(request):
-    query = request.GET.get('s', '')
-    products_lst = models.Product.objects.filter(title__icontains=query) if query else models.Product.none
-    context = {
-        'products': products_lst,
-        's': query
-    }
-    return render(request, template_name='products/all_products.html', context=context)
+
+class SearchView(generic.ListView):
+    def get(self, request):
+        query = request.GET.get('s', '')
+        if query:
+            products_lst = models.Product.objects.filter(title__icontains=query)
+        else:
+            products_lst = models.objects.none
+        context = {
+         'products': products_lst,
+         's': query
+        }
+        return render(request, template_name='products/all_products.html', context=context)
+
+
+# def seach_view(request):
+#     query = request.GET.get('s', '')
+#     products_lst = models.Product.objects.filter(title__icontains=query) if query else models.Product.none
+#     context = {
+#         'products': products_lst,
+#         's': query
+#     }
+#     return render(request, template_name='products/all_products.html', context=context)
 
 #1.Фронтендщик создает в html шаблоне форму и внутри есть name=s
 #2.Прописываете логику поиска
@@ -29,12 +44,21 @@ def all_products(request):
                       {'products': products})
 
 
+class ChineseFoodView(generic.ListView):
+    model = models.Product
+    template_name = 'products/chinese_food.html'
+    context_object_name = 'products'
+    ordering = '-id'
 
-def chinese_food(request):
-    if request.method == 'GET':
-        products = models.Product.objects.filter(tags__name='#Китайская кухня').order_by('-id')
-        return render(request, 'products/chinese_food.html', 
-                      {'products': products})
+    def get_queryset(self):
+        chinese_food = self.model.objects.filter(tags__name='#Китайская кухня')
+        return chinese_food
+
+# def chinese_food(request):
+#     if request.method == 'GET':
+#         products = models.Product.objects.filter(tags__name='#Китайская кухня').order_by('-id')
+#         return render(request, 'products/chinese_food.html', 
+#                       {'products': products})
 
 def drinks(request):
     if request.method == 'GET':
